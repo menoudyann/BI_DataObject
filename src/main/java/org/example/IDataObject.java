@@ -1,11 +1,15 @@
 package org.example;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 
 public interface IDataObject {
-    public void uploadObject(byte[] file, String remoteFullPath);
-    public File downloadObject(byte[] file, String localFullPath);
-    public URL publishObject(String remoteFullPath, int expirationTime);
-    public void removeObject(String remoteFullPath, boolean isRecursive);
+
+    public boolean doesExist(URI remoteFullPath);
+    public void upload(URI localFullPath, URI remoteFullPath) throws Exception;
+    public void download(URI localFullPath, URI remoteFullPath);
+    public URL publish(String remoteFullPath, int expirationTime);
+    public void remove(String remoteFullPath, boolean isRecursive);
 }
