@@ -2,36 +2,24 @@ package org.example;
 
 import junit.framework.TestCase;
 
+import java.net.URI;
+
 public class GoogleDataObjectImplTest extends TestCase {
 
-    public void DoesExist_ExistingBucket_BucketExists() {
-    }
 
-    public void DoesExist_ExistingObject_ObjectExists() {
-    }
-    public void DoesExist_MissingObject_ObjectNotExists() {
-    }
-
-    public void Upload_BucketAndLocalFileAreAvailable_NewObjectCreatedOnBucket() {
-    }
-
-    public void Download_ObjectAndLocalPathAvailable_ObjectDownloaded() {
-    }
-
-    public void Download_ObjectMissing_ThrowException() {
+    public void testDoesExist() {
 
     }
 
-    public void Publish_ObjectExists_PublicUrlCreated() {
+    public void testUpload() {
     }
 
-    public void Publish_ObjectMissing_ThrowException() {
+    public void testDownload() {
     }
 
-    public void Remove_ObjectPresentNoFolder_ObjectRemoved() {
+    public void testPublish() {
     }
 
-    public void Remove_ObjectAndFolderPresent_ObjectRemoved() {
+    public void testRemove() {
     }
-
 }
