@@ -19,6 +19,7 @@ public class Main {
 
         //System.out.println(googleDataObject.doesExist(URI.create("gs://java.gogle.cld.education/test.png")));
 
-        googleDataObject.remove(URI.create("gs://java.gogle.cld.education/code.jpg"), false);
+        //googleDataObject.remove(URI.create("gs://java.gogle.cld.education/code.jpg"), false);
+        //googleDataObject.download(URI.create("file:///Users/yannmenoud/Downloads/testDownload.png"), URI.create("gs://java.gogle.cld.education/test.png"));
     }
 }

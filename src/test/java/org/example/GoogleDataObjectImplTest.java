@@ -5,6 +5,9 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Paths;
+
+import static org.junit.Assert.assertThrows;
 
 public class GoogleDataObjectImplTest extends TestCase {
 
@@ -19,7 +22,6 @@ public class GoogleDataObjectImplTest extends TestCase {
     // Tests for doesExist method
     // -----------------------------------------------------------------------------------------------------------------
     public void testDoesExist_ExistingBucket_BucketExists() {
-
         URI bucketUri = URI.create("gs://java.gogle.cld.education/");
         //given
         //The bucket is always available
@@ -61,7 +63,6 @@ public class GoogleDataObjectImplTest extends TestCase {
     // Tests for upload method
     // -----------------------------------------------------------------------------------------------------------------
     public void testUpload_BucketAndLocalFileAreAvailable_NewObjectCreatedOnBucket() throws IOException {
-
         URI bucketUri = URI.create("gs://java.gogle.cld.education/");
         URI objectUri = URI.create("gs://java.gogle.cld.education/code.jpg");
         URI localFile = URI.create("file:///Users/yannmenoud/Downloads/code.jpg");
@@ -77,4 +78,42 @@ public class GoogleDataObjectImplTest extends TestCase {
         assertTrue(this.dataObject.doesExist(objectUri));
         this.dataObject.remove(objectUri, false);
     }
+
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Tests for download method
+    // -----------------------------------------------------------------------------------------------------------------
+    public void testDownload_ObjectAndLocalPathAvailable_ObjectDownloaded() throws ObjectNotFoundException {
+        URI objectUri = URI.create("gs://java.gogle.cld.education/test.png");
+        URI localFile = URI.create("file:///Users/yannmenoud/Downloads/testDownload.jpg");
+
+        //given
+        assertTrue(this.dataObject.doesExist(objectUri));
+        assertFalse(Paths.get(localFile).toFile().exists());
+
+        //when
+        this.dataObject.download(localFile, objectUri);
+
+        //then
+        assertTrue(Paths.get(localFile).toFile().exists());
+
+        Paths.get(localFile).toFile().delete();
+    }
+
+    public void testDownload_ObjectMissing_ThrowException() {
+        URI objectUri = URI.create("gs://java.gogle.cld.education/dontexists.png");
+        URI localFile = URI.create("file:///Users/yannmenoud/Downloads/testDownload.jpg");
+
+        //given
+        assertFalse(this.dataObject.doesExist(objectUri));
+        assertFalse(Paths.get(localFile).toFile().exists());
+
+        //when
+        assertThrows(ObjectNotFoundException.class, () -> this.dataObject.download(localFile, objectUri));
+
+        //then
+        //Exception thrown
+    }
+
+
 }

@@ -71,15 +71,20 @@ public class GoogleDataObjectImpl implements IDataObject {
     }
 
     @Override
-    public void download(URI localFullPath, URI remoteFullPath) {
+    public void download(URI localFullPath, URI remoteFullPath) throws ObjectNotFoundException {
 
         // Get bucket name and object name
         String bucketName = remoteFullPath.getHost();
         String objectName = remoteFullPath.getPath().substring(remoteFullPath.getPath().lastIndexOf('/') + 1);
 
         // Download file
-        Blob blob = storage.get(BlobId.of(bucketName, objectName));
-        blob.downloadTo(Paths.get(localFullPath));
+        try {
+            Blob blob = storage.get(BlobId.of(bucketName, objectName));
+            blob.downloadTo(Paths.get(localFullPath));
+        } catch (Exception e) {
+            throw new ObjectNotFoundException();
+        }
+
     }
 
 
