@@ -42,7 +42,7 @@ public class GoogleDataObjectImpl implements IDataObject {
                 result = bucket.exists();
             }
         } else {
-            BlobId blobId = BlobId.of(remoteFullPath.getHost(), remoteFullPath.getPath());
+            BlobId blobId = BlobId.of(remoteFullPath.getHost(), remoteFullPath.getPath().substring(1));
             Blob blob = storage.get(blobId);
             if (blob != null) {
                 result = blob.exists();
@@ -73,31 +73,15 @@ public class GoogleDataObjectImpl implements IDataObject {
     @Override
     public void download(URI localFullPath, URI remoteFullPath) {
 
-//        // The ID of your GCS bucket
-//        String bucketName = remoteFullPath.getHost();
-//
-//        // The ID of your GCS object
-//        // String objectName = "your-object-name";
-//
-//        // The path to which the file should be downloaded
-//        // String destFilePath = "/local/path/to/file.txt";
-//
-//        Storage storage = StorageOptions.newBuilder().setProjectId(projectId).build().getService();
-//
-//        Blob blob = storage.get(BlobId.of(bucketName, objectName));
-//        blob.downloadTo(Paths.get(destFilePath));
-//
-//        System.out.println(
-//                "Downloaded object "
-//                        + objectName
-//                        + " from bucket name "
-//                        + bucketName
-//                        + " to "
-//                        + destFilePath);
-//    }
+        // Get bucket name and object name
+        String bucketName = remoteFullPath.getHost();
+        String objectName = remoteFullPath.getPath().substring(remoteFullPath.getPath().lastIndexOf('/') + 1);
 
-
+        // Download file
+        Blob blob = storage.get(BlobId.of(bucketName, objectName));
+        blob.downloadTo(Paths.get(localFullPath));
     }
+
 
     @Override
     public URL publish(String remoteFullPath, int expirationTime) {
