@@ -6,7 +6,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -55,20 +54,20 @@ public class GoogleDataObjectImpl implements IDataObject {
     @Override
     public void upload(URI localFullPath, URI remoteFullPath) throws IOException {
 
-//        // Get bucket name and object name
-//        String bucketName = remoteFullPath.getHost();
-//        String objectName = localFullPath.getPath().substring(localFullPath.getPath().lastIndexOf('/') + 1);
-//
-//        // Check if file exists
-//        File file = Paths.get(localFullPath).toFile();
-//        if (!file.exists()) {
-//            System.out.println("File not found");
-//        }
-//
-//        // Upload file
-//        BlobId blobId = BlobId.of(bucketName, objectName);
-//        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-//        storage.createFrom(blobInfo, Paths.get(localFullPath));
+        // Get bucket name and object name
+        String bucketName = remoteFullPath.getHost();
+        String objectName = localFullPath.getPath().substring(localFullPath.getPath().lastIndexOf('/') + 1);
+
+        // Check if file exists
+        File file = Paths.get(localFullPath).toFile();
+        if (!file.exists()) {
+            System.out.println("File not found");
+        }
+
+        // Upload file
+        BlobId blobId = BlobId.of(bucketName, objectName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+        storage.createFrom(blobInfo, Paths.get(localFullPath));
     }
 
     @Override
