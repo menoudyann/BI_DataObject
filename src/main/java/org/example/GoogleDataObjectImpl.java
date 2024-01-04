@@ -84,12 +84,21 @@ public class GoogleDataObjectImpl implements IDataObject {
 
 
     @Override
-    public URL publish(String remoteFullPath, int expirationTime) {
+    public URL publish(URI remoteFullPath, int expirationTime) {
         return null;
     }
 
     @Override
-    public void remove(String remoteFullPath, boolean isRecursive) {
+    public void remove(URI remoteFullPath, boolean isRecursive) {
 
+        String bucketName = remoteFullPath.getHost();
+        String objectName = remoteFullPath.getPath().substring(remoteFullPath.getPath().lastIndexOf('/') + 1);
+
+        Blob blob = storage.get(bucketName, objectName);
+        if (blob == null) {
+            return;
+        }
+
+        storage.delete(bucketName, objectName);
     }
 }

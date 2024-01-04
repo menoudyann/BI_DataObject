@@ -2,6 +2,7 @@ package org.example;
 
 import junit.framework.TestCase;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
@@ -9,12 +10,14 @@ public class GoogleDataObjectImplTest extends TestCase {
 
     private GoogleDataObjectImpl dataObject;
 
-
     public void setUp() throws Exception {
         super.setUp();
         this.dataObject = new GoogleDataObjectImpl("GOOGLE_APPLICATION_CREDENTIALS");
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Tests for doesExist method
+    // -----------------------------------------------------------------------------------------------------------------
     public void testDoesExist_ExistingBucket_BucketExists() {
 
         URI bucketUri = URI.create("gs://java.gogle.cld.education/");
@@ -54,4 +57,24 @@ public class GoogleDataObjectImplTest extends TestCase {
         assertFalse(this.dataObject.doesExist(objectUri));
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Tests for upload method
+    // -----------------------------------------------------------------------------------------------------------------
+    public void testUpload_BucketAndLocalFileAreAvailable_NewObjectCreatedOnBucket() throws IOException {
+
+        URI bucketUri = URI.create("gs://java.gogle.cld.education/");
+        URI objectUri = URI.create("gs://java.gogle.cld.education/code.jpg");
+        URI localFile = URI.create("file:///Users/yannmenoud/Downloads/code.jpg");
+
+        //given
+        assertTrue(this.dataObject.doesExist(bucketUri));
+        assertFalse(this.dataObject.doesExist(objectUri));
+
+        //when
+        this.dataObject.upload(localFile, objectUri);
+
+        //then
+        assertTrue(this.dataObject.doesExist(objectUri));
+        this.dataObject.remove(objectUri, false);
+    }
 }
