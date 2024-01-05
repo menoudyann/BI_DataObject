@@ -1,5 +1,6 @@
 package org.example;
 
+import com.google.api.gax.paging.Page;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -9,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -56,10 +58,14 @@ public class GoogleDataObjectImpl implements IDataObject {
 
         // Get bucket name and object name
         String bucketName = remoteFullPath.getHost();
-        String objectName = localFullPath.getPath().substring(localFullPath.getPath().lastIndexOf('/') + 1);
+        String objectName = remoteFullPath.getPath().substring(remoteFullPath.getPath().lastIndexOf('/') + 1);
+
+
+        // Get file path
+        Path path = Paths.get(localFullPath);
 
         // Check if file exists
-        File file = Paths.get(localFullPath).toFile();
+        File file = path.toFile();
         if (!file.exists()) {
             System.out.println("File not found");
         }
@@ -67,7 +73,7 @@ public class GoogleDataObjectImpl implements IDataObject {
         // Upload file
         BlobId blobId = BlobId.of(bucketName, objectName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-        storage.createFrom(blobInfo, Paths.get(localFullPath));
+        storage.createFrom(blobInfo, path);
     }
 
     @Override
@@ -89,8 +95,20 @@ public class GoogleDataObjectImpl implements IDataObject {
 
 
     @Override
-    public URL publish(URI remoteFullPath, int expirationTime) {
-        return null;
+    public URL publish(URI remoteFullPath, int expirationTime) throws ObjectNotFoundException {
+
+        // Get bucket name and object name
+        String bucketName = remoteFullPath.getHost();
+        String objectName = remoteFullPath.getPath().substring(remoteFullPath.getPath().lastIndexOf('/') + 1);
+
+        // Get blob
+        Blob blob = storage.get(BlobId.of(bucketName, objectName));
+        if (blob == null) {
+            throw new ObjectNotFoundException();
+        }
+
+        // Get url
+        return blob.signUrl(expirationTime, java.util.concurrent.TimeUnit.SECONDS);
     }
 
     @Override
@@ -99,9 +117,16 @@ public class GoogleDataObjectImpl implements IDataObject {
         String bucketName = remoteFullPath.getHost();
         String objectName = remoteFullPath.getPath().substring(remoteFullPath.getPath().lastIndexOf('/') + 1);
 
-        Blob blob = storage.get(bucketName, objectName);
-        if (blob == null) {
-            return;
+        if (isRecursive) {
+            Page<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(objectName));
+            for (Blob blob : blobs.iterateAll()) {
+                storage.delete(bucketName, blob.getName());
+            }
+        } else {
+            Blob blob = storage.get(bucketName, objectName);
+            if (blob == null) {
+                return;
+            }
         }
 
         storage.delete(bucketName, objectName);

@@ -15,7 +15,7 @@ public class Main {
 
         GoogleDataObjectImpl googleDataObject = new GoogleDataObjectImpl("GOOGLE_APPLICATION_CREDENTIALS");
 
-        //googleDataObject.upload(URI.create("file:///Users/yannmenoud/Downloads/testttt.png"), URI.create("gs://java.gogle.cld.education"));
+        //googleDataObject.upload(URI.create("file:///Users/yannmenoud/Downloads/test.jpg"), URI.create("gs://java.gogle.cld.education/testRemove.jpg"));
 
         //System.out.println(googleDataObject.doesExist(URI.create("gs://java.gogle.cld.education/test.png")));
 
