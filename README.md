@@ -4,7 +4,7 @@ This repository contains the **Data Object** microservice.
 
 The Label Detector microservice can be found here : 
 
-https://github.com/menoudyann/BI_LabelDetector
+[Go To Label Detector](https://github.com/menoudyann/BI_LabelDetector)
 
 ## Description
 
