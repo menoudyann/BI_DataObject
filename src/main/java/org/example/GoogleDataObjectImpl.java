@@ -13,6 +13,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class GoogleDataObjectImpl implements IDataObject {
 
@@ -108,7 +109,7 @@ public class GoogleDataObjectImpl implements IDataObject {
         }
 
         // Get url
-        return blob.signUrl(expirationTime, java.util.concurrent.TimeUnit.SECONDS);
+        return blob.signUrl(expirationTime, TimeUnit.SECONDS);
     }
 
     @Override

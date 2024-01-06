@@ -88,28 +88,30 @@ public class GoogleDataObjectImplTest extends TestCase {
     public void testDownload_ObjectAndLocalPathAvailable_ObjectDownloaded() throws ObjectNotFoundException {
         URI objectUri = URI.create("gs://java.gogle.cld.education/test.png");
         URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/testDownload.jpg");
+        File file = Paths.get(localFile).toFile();
 
         //given
         assertTrue(this.dataObject.doesExist(objectUri));
-        assertFalse(Paths.get(localFile).toFile().exists());
+        assertFalse(file.exists());
 
         //when
         this.dataObject.download(localFile, objectUri);
 
         //then
-        assertTrue(Paths.get(localFile).toFile().exists());
+        assertTrue(file.exists());
 
-        Paths.get(localFile).toFile().delete();
+        file.delete();
     }
 
     public void testDownload_ObjectMissing_ThrowException() {
         URI objectUri = URI.create("gs://java.gogle.cld.education/dontexists.png");
         URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/testDownload.jpg");
+        File file = Paths.get(localFile).toFile();
 
 
         //given
         assertFalse(this.dataObject.doesExist(objectUri));
-        assertFalse(Paths.get(localFile).toFile().exists());
+        assertFalse(file.exists());
 
         //when
         assertThrows(ObjectNotFoundException.class, () -> this.dataObject.download(localFile, objectUri));
@@ -127,18 +129,20 @@ public class GoogleDataObjectImplTest extends TestCase {
         URI objectUri = URI.create("gs://java.gogle.cld.education/test.png");
         URI destinationFolder = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/");
         URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/testPublish.jpg");
+        File folder = Paths.get(destinationFolder).toFile();
+        File file = Paths.get(localFile).toFile();
 
         //given
         assertTrue(this.dataObject.doesExist(objectUri));
-        assertTrue(Paths.get(destinationFolder).toFile().exists());
+        assertTrue(folder.exists());
 
         //when
-        URL presignedUrl = this.dataObject.publish(objectUri, 10);
+        URL presignedUrl = this.dataObject.publish(objectUri, 90);
         //TODO download file using wget or another method that do not need our project library
         FileUtils.copyURLToFile(presignedUrl, new File(destinationFolder.getPath() + "testPublish.jpg"));
 
         //then
-        assertTrue(Paths.get(localFile).toFile().exists());
+        assertTrue(file.exists());
     }
 
     public void testPublish_ObjectMissing_ThrowException() {
@@ -149,7 +153,7 @@ public class GoogleDataObjectImplTest extends TestCase {
         assertFalse(this.dataObject.doesExist(objectUri));
 
         //when
-        assertThrows(ObjectNotFoundException.class, () -> this.dataObject.publish(objectUri, 10));
+        assertThrows(ObjectNotFoundException.class, () -> this.dataObject.publish(objectUri, 90));
 
         //then
         //Exception thrown
