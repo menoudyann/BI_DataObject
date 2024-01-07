@@ -23,50 +23,80 @@ Here are the prerequisites for finding work on the project.
 
 ### Configuration
 
-How to set up the database? How do you set the sensitive data?
+**Environment File**
+
+The project contains an example of the environment file required for the project. Simply copy it and rename it .env.
+
+```bash
+# .env
+GOOGLE_APPLICATION_CREDENTIALS="path/to/credentials.json"
+```
 
 ## Deployment
 
 ### On dev environment
 
-How to get dependencies and build? How to run the tests?
+#### Dependencies 
 
-### On integration environment
-
-How to deploy the application outside the dev environment.
+Go to the pom.xml file, then load maven changes to retrieve all the necessary dependencies.
 
 ## Directory structure
 
 - Tip: try the tree bash command
 
 ```
-├───Docs
-├───Shopping                                        //classes and packages
-│   ├───bin                                         //the binary to deploy on the end-user environment
-│   │   └───Debug
-│   └───obj
-│       └───Debug                                   
-└───TestShopping                                    //test classes
-    ├───bin
-    │   └───Debug
-    └───obj
-        └───Debug
+./src
+├── main
+│   ├── java
+│   │   └── org
+│   │       └── example
+│   │           ├── GoogleDataObjectImpl.java
+│   │           ├── GoogleDataObjectImplException.java
+│   │           ├── IDataObject.java
+│   │           ├── Main.java
+│   │           ├── NotEmptyObjectException.java
+│   │           ├── ObjectAlreadyExistsException.java
+│   │           └── ObjectNotFoundException.java
+│   └── resources
+└── test
+    └── java
+        └── org
+            └── example
+                ├── GoogleDataObjectImplTest.java
+                └── images
 ```
 
 
 
 ## Collaborate
 
-- Take time to read some readme and find the way you would like to help other developers collaborate with you.
-- They need to know:
-  - How to propose a new feature (issue, pull request)
-  - [How to commit](https://www.conventionalcommits.org/en/v1.0.0/)
-  - [How to use your workflow](https://nvie.com/posts/a-successful-git-branching-model/)
+#### How to propose a new feature ?
+
+If you're interested in enhancing this project, you're welcome to:
+
+- **Fork the Project:** You can create a fork of the project on your own GitHub account to work on your changes.
+- **Submit Pull Requests:** If you develop new features or improvements, feel free to submit a pull request for integration into the main project.
+
+#### Commit Rules
+
+I use very simple commit rules. The commit message **starts with an infinitive verb and describes the added/deleted content clearly in one sentence**. If your commit requires two sentences because the code added modifies two things, please make two separate commits. This is to improve readability and also simplify versioning.
+
+#### Branches Strategy
+
+By default, there are two branches: main and develop. Main is the branch currently in production, develop is based on the same branch. 
+
+To add a new feature, please create a branch from develop using Gitflow. [To the Gitflow guide](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) 
+
+#### Any question ?
+
+For any questions or further information, please feel free to reach out to me at: yann.menoud@gmail.com.
+
+
 
 ## License
 
-- [Choose the license adapted to your project](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository).
+This project is licensed under the [MIT](https://en.wikipedia.org/wiki/MIT_License) licence.
 
 ## Contact
 
-- How to get in contact with you? Discord, Trello, Issue?
+You can contact me by email at the following address: yann.menoud@gmail.com or directly on [Linkedin](https://www.linkedin.com/in/yann-menoud-433780225/).
