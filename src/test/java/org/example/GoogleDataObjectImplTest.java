@@ -45,6 +45,7 @@ public class GoogleDataObjectImplTest extends TestCase {
         //check the assertion
 
         //then
+
         assertTrue(this.dataObject.doesExist(objectUri));
     }
 
@@ -66,7 +67,7 @@ public class GoogleDataObjectImplTest extends TestCase {
     // -----------------------------------------------------------------------------------------------------------------
     public void testUpload_BucketAndLocalFileAreAvailable_NewObjectCreatedOnBucket() throws IOException {
         URI bucketUri = URI.create("gs://java.gogle.cld.education/");
-        URI objectUri = URI.create("gs://java.gogle.cld.education/code.jpg");
+        URI objectUri = URI.create("gs://java.gogle.cld.education/test/code.jpg");
         URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/code.jpg");
 
         //given
@@ -86,7 +87,7 @@ public class GoogleDataObjectImplTest extends TestCase {
     // Tests for download method
     // -----------------------------------------------------------------------------------------------------------------
     public void testDownload_ObjectAndLocalPathAvailable_ObjectDownloaded() throws ObjectNotFoundException {
-        URI objectUri = URI.create("gs://java.gogle.cld.education/test.png");
+        URI objectUri = URI.create("gs://java.gogle.cld.education/team.jpg");
         URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/testDownload.jpg");
         File file = Paths.get(localFile).toFile();
 
@@ -181,10 +182,9 @@ public class GoogleDataObjectImplTest extends TestCase {
 
     public void testRemove_ObjectAndFolderPresent_ObjectRemoved() throws IOException {
 
-        URI bucketUri = URI.create("gs://java.gogle.cld.education/");
-        URI objectUri = URI.create("gs://java.gogle.cld.education/testRemove.jpg");
+        URI objectUri = URI.create("gs://java.gogle.cld.education/test/code.jpg");
         URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/testRemove.jpg");
-        URI objectUriWithSubFolder = URI.create("gs://java.gogle.cld.education/testRemove.jpg");
+        URI objectUriWithSubFolder = URI.create("gs://java.gogle.cld.education/test/code.jpg");
 
         this.dataObject.upload(localFile, objectUri);
 
@@ -200,5 +200,6 @@ public class GoogleDataObjectImplTest extends TestCase {
 
         //then
         assertFalse(this.dataObject.doesExist(objectUri));
+        assertFalse(this.dataObject.doesExist(objectUriWithSubFolder));
     }
 }
