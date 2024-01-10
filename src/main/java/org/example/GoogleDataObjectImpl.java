@@ -91,7 +91,6 @@ public class GoogleDataObjectImpl implements IDataObject {
 
     }
 
-
     @Override
     public URL publish(URI remoteFullPath, int expirationTime) throws ObjectNotFoundException {
 
