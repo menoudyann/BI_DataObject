@@ -1,5 +1,6 @@
 package org.example;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 
@@ -14,9 +15,11 @@ import static org.junit.Assert.assertThrows;
 public class GoogleDataObjectImplTest extends TestCase {
 
     private GoogleDataObjectImpl dataObject;
+    private Dotenv dotenv;
 
     public void setUp() throws Exception {
         super.setUp();
+        dotenv = Dotenv.load();
         this.dataObject = new GoogleDataObjectImpl("GOOGLE_APPLICATION_CREDENTIALS");
     }
 
@@ -24,7 +27,7 @@ public class GoogleDataObjectImplTest extends TestCase {
     // Tests for doesExist method
     // -----------------------------------------------------------------------------------------------------------------
     public void testDoesExist_ExistingBucket_BucketExists() {
-        URI bucketUri = URI.create("gs://java.gogle.cld.education/");
+        URI bucketUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI"));
         //given
         //The bucket is always available
 
@@ -35,11 +38,12 @@ public class GoogleDataObjectImplTest extends TestCase {
     }
 
     public void testDoesExist_ExistingObject_ObjectExists() throws IOException {
-        URI objectUri = URI.create("gs://java.gogle.cld.education/test.png");
+        URI objectUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest.png");
 
         //given
         //The bucket is always available
-        this.dataObject.upload(URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/test.png"), objectUri);
+        URI localUri = new File("images/test.png").toURI();
+        this.dataObject.upload(localUri, objectUri);
 
         //when
         //check the assertion
@@ -47,10 +51,11 @@ public class GoogleDataObjectImplTest extends TestCase {
         //then
 
         assertTrue(this.dataObject.doesExist(objectUri));
+        this.dataObject.remove(objectUri, false);
     }
 
     public void testDoesExist_MissingObject_ObjectNotExists() {
-        URI objectUri = URI.create("gs://java.gogle.cld.education/testnexistepas.png");
+        URI objectUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest.png");
         //given
         //The bucket is always available
         //The bucket is empty (or does not contain the expected object)
@@ -66,9 +71,10 @@ public class GoogleDataObjectImplTest extends TestCase {
     // Tests for upload method
     // -----------------------------------------------------------------------------------------------------------------
     public void testUpload_BucketAndLocalFileAreAvailable_NewObjectCreatedOnBucket() throws IOException {
-        URI bucketUri = URI.create("gs://java.gogle.cld.education/");
-        URI objectUri = URI.create("gs://java.gogle.cld.education/test/code.jpg");
-        URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/code.jpg");
+      
+        URI bucketUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI"));
+        URI objectUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest.jpg");
+        URI localFile = new File("images/test.png").toURI();
 
         //given
         assertTrue(this.dataObject.doesExist(bucketUri));
@@ -86,29 +92,33 @@ public class GoogleDataObjectImplTest extends TestCase {
     // -----------------------------------------------------------------------------------------------------------------
     // Tests for download method
     // -----------------------------------------------------------------------------------------------------------------
-    public void testDownload_ObjectAndLocalPathAvailable_ObjectDownloaded() throws ObjectNotFoundException {
-        URI objectUri = URI.create("gs://java.gogle.cld.education/team.jpg");
-        URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/testDownload.jpg");
-        File file = Paths.get(localFile).toFile();
+
+    public void testDownload_ObjectAndLocalPathAvailable_ObjectDownloaded() throws ObjectNotFoundException, IOException {
+      
+        URI objectUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest.png");
+        URI fileToUpload = new File("images/test.png").toURI();
+        URI destinationFile = new File("images/downloaded.png").toURI();
+        File file = Paths.get(destinationFile).toFile();
 
         //given
+        this.dataObject.upload(fileToUpload, objectUri);
         assertTrue(this.dataObject.doesExist(objectUri));
         assertFalse(file.exists());
 
         //when
-        this.dataObject.download(localFile, objectUri);
+        this.dataObject.download(destinationFile, objectUri);
 
         //then
         assertTrue(file.exists());
 
         file.delete();
+        this.dataObject.remove(objectUri, false);
     }
 
     public void testDownload_ObjectMissing_ThrowException() {
-        URI objectUri = URI.create("gs://java.gogle.cld.education/dontexists.png");
-        URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/testDownload.jpg");
+        URI objectUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest.png");
+        URI localFile = new File("images/dontExist.png").toURI();
         File file = Paths.get(localFile).toFile();
-
 
         //given
         assertFalse(this.dataObject.doesExist(objectUri));
@@ -126,29 +136,31 @@ public class GoogleDataObjectImplTest extends TestCase {
     // Tests for publish method
     // -----------------------------------------------------------------------------------------------------------------
     public void testPublish_ObjectExists_PublicUrlCreated() throws IOException, ObjectNotFoundException {
+        URI objectUriLocal = new File("images/test.png").toURI();
+        URI objectUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest.png");
+        this.dataObject.upload(objectUriLocal, objectUri);
 
-        URI objectUri = URI.create("gs://java.gogle.cld.education/test.png");
-        URI destinationFolder = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/");
-        URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/testPublish.jpg");
-        File folder = Paths.get(destinationFolder).toFile();
-        File file = Paths.get(localFile).toFile();
+        URI destinationFolder = new File("images/").toURI();
+        File destinationFolderFile = Paths.get(destinationFolder).toFile();
 
         //given
         assertTrue(this.dataObject.doesExist(objectUri));
-        assertTrue(folder.exists());
+        assertTrue(destinationFolderFile.exists());
 
         //when
         URL presignedUrl = this.dataObject.publish(objectUri, 90);
-        //TODO download file using wget or another method that do not need our project library
-        FileUtils.copyURLToFile(presignedUrl, new File(destinationFolder.getPath() + "testPublish.jpg"));
+        File downloadedFile = new File(destinationFolder.getPath() + "fileToTest.png");
+        FileUtils.copyURLToFile(presignedUrl, downloadedFile);
 
         //then
-        assertTrue(file.exists());
+        assertTrue(downloadedFile.exists());
+        downloadedFile.delete();
+        this.dataObject.remove(objectUri, false);
     }
 
     public void testPublish_ObjectMissing_ThrowException() {
 
-        URI objectUri = URI.create("gs://java.gogle.cld.education/nexistepas.png");
+        URI objectUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest.png");
 
         //given
         assertFalse(this.dataObject.doesExist(objectUri));
@@ -160,14 +172,13 @@ public class GoogleDataObjectImplTest extends TestCase {
         //Exception thrown
     }
 
-
     // -----------------------------------------------------------------------------------------------------------------
     // Tests for remove method
     // -----------------------------------------------------------------------------------------------------------------
     public void testRemove_ObjectPresentNoFolder_ObjectRemoved() throws IOException {
 
-        URI objectUri = URI.create("gs://java.gogle.cld.education/testRemove.jpg");
-        URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/team.jpg");
+        URI objectUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest.png");
+        URI localFile = new File("images/test.png").toURI();
         this.dataObject.upload(localFile, objectUri);
 
         //given
@@ -182,18 +193,19 @@ public class GoogleDataObjectImplTest extends TestCase {
 
     public void testRemove_ObjectAndFolderPresent_ObjectRemoved() throws IOException {
 
-        URI objectUri = URI.create("gs://java.gogle.cld.education/test/code.jpg");
-        URI localFile = URI.create("file:///Users/yannmenoud/Desktop/CPNV/BI/DataObject/src/test/java/org/example/images/testRemove.jpg");
-        URI objectUriWithSubFolder = URI.create("gs://java.gogle.cld.education/test/code.jpg");
+        URI objectUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest");
+        URI localFile = new File("images/test.png").toURI();
+        URI objectUriInSubFolder = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "test/fileToTest");
 
         this.dataObject.upload(localFile, objectUri);
+        this.dataObject.upload(localFile, objectUriInSubFolder);
 
         //given
         //The bucket contains object at the root level as well as in subfolders
         //Sample: mybucket.com/myobject     //myObject is a folder
         //        mybucket.com/myobject/myObjectInSubfolder
         assertTrue(this.dataObject.doesExist(objectUri));
-        assertTrue(this.dataObject.doesExist(objectUriWithSubFolder));
+        assertTrue(this.dataObject.doesExist(objectUriInSubFolder));
 
         //when
         this.dataObject.remove(objectUri, true);
