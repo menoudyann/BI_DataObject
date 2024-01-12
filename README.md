@@ -30,6 +30,8 @@ The project contains an example of the environment file required for the project
 ```bash
 # .env
 GOOGLE_APPLICATION_CREDENTIALS="path/to/credentials.json"
+GOOGLE_BUCKET_URI=gs://java.gogle.cld.education/
+
 ```
 
 ## Deployment
