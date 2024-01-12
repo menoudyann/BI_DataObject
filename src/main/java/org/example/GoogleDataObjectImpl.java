@@ -121,8 +121,7 @@ public class GoogleDataObjectImpl implements IDataObject {
             if (blob == null) {
                 return;
             }
+            storage.delete(bucketName, objectName);
         }
-
-        storage.delete(bucketName, objectName);
     }
 }

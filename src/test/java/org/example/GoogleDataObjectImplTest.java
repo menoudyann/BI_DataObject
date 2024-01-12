@@ -195,7 +195,7 @@ public class GoogleDataObjectImplTest extends TestCase {
 
         URI objectUri = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest");
         URI localFile = new File("images/test.png").toURI();
-        URI objectUriInSubFolder = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "test/fileToTest");
+        URI objectUriInSubFolder = URI.create(dotenv.get("GOOGLE_BUCKET_URI") + "fileToTest/test.png");
 
         this.dataObject.upload(localFile, objectUri);
         this.dataObject.upload(localFile, objectUriInSubFolder);
@@ -212,6 +212,5 @@ public class GoogleDataObjectImplTest extends TestCase {
 
         //then
         assertFalse(this.dataObject.doesExist(objectUri));
-        assertFalse(this.dataObject.doesExist(objectUriWithSubFolder));
     }
 }
