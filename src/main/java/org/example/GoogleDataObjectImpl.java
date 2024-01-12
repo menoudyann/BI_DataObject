@@ -59,7 +59,7 @@ public class GoogleDataObjectImpl implements IDataObject {
 
         // Get bucket name and object name
         String bucketName = remoteFullPath.getHost();
-        String objectName = remoteFullPath.getPath().substring(remoteFullPath.getPath().lastIndexOf('/') + 1);
+        String objectName = remoteFullPath.getPath().substring(1);
 
 
         // Get file path
@@ -82,7 +82,7 @@ public class GoogleDataObjectImpl implements IDataObject {
 
         // Get bucket name and object name
         String bucketName = remoteFullPath.getHost();
-        String objectName = remoteFullPath.getPath().substring(remoteFullPath.getPath().lastIndexOf('/') + 1);
+        String objectName = remoteFullPath.getPath().substring(1);
 
         // Download file
         try {
@@ -100,7 +100,7 @@ public class GoogleDataObjectImpl implements IDataObject {
 
         // Get bucket name and object name
         String bucketName = remoteFullPath.getHost();
-        String objectName = remoteFullPath.getPath().substring(remoteFullPath.getPath().lastIndexOf('/') + 1);
+        String objectName = remoteFullPath.getPath().substring(1);
 
         // Get blob
         Blob blob = storage.get(BlobId.of(bucketName, objectName));
@@ -116,7 +116,7 @@ public class GoogleDataObjectImpl implements IDataObject {
     public void remove(URI remoteFullPath, boolean isRecursive) {
 
         String bucketName = remoteFullPath.getHost();
-        String objectName = remoteFullPath.getPath().substring(remoteFullPath.getPath().lastIndexOf('/') + 1);
+        String objectName = remoteFullPath.getPath().substring(1);
 
         if (isRecursive) {
             Page<Blob> blobs = storage.list(bucketName, Storage.BlobListOption.prefix(objectName));
