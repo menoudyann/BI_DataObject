@@ -20,6 +20,7 @@ Here are the prerequisites for finding work on the project.
 - Apache Maven 3.9.5 
 - Google Cloud Platform account with Vision API V1 enabled 
 - Eclipe Temurin version 21.0.1
+- jUnit 5.8.1
 
 ### Configuration
 
@@ -40,7 +41,18 @@ GOOGLE_BUCKET_URI=gs://java.gogle.cld.education/
 
 #### Dependencies 
 
-Go to the pom.xml file, then load maven changes to retrieve all the necessary dependencies.
+Go the the project root and run the following command to install the dependencies.
+
+```
+mvn clean install
+```
+
+### On prod environment
+
+#### Build
+```
+mvn clean package
+```
 
 ## Directory structure
 
@@ -97,7 +109,7 @@ For any questions or further information, please feel free to reach out to me at
 
 ## License
 
-This project is licensed under the [MIT](https://en.wikipedia.org/wiki/MIT_License) licence.
+This project is licensed under the [MIT](https://github.com/menoudyann/BI_DataObject/blob/main/LICENSE) licence.
 
 ## Contact
 
