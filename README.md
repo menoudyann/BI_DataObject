@@ -20,6 +20,7 @@ Here are the prerequisites for finding work on the project.
 - Apache Maven 3.9.5 
 - Google Cloud Platform account with Vision API V1 enabled 
 - Eclipe Temurin version 21.0.1
+- jUnit 5.8.1
 
 ### Configuration
 
