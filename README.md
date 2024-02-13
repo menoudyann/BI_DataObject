@@ -17,8 +17,8 @@ This Java microservice offers essential functionalities for Google Cloud Storage
 Here are the prerequisites for finding work on the project.
 
 - IntelliJ IDEA 2023.2.2 (Ultimate Edition)
-- Maven
-- Google Cloud Platform account with Vision API enabled 
+- Apache Maven 3.9.5 
+- Google Cloud Platform account with Vision API V1 enabled 
 - Eclipe Temurin version 21.0.1
 
 ### Configuration
@@ -52,11 +52,11 @@ Go to the pom.xml file, then load maven changes to retrieve all the necessary de
 │   ├── java
 │   │   └── org
 │   │       └── example
-│   │           ├── GoogleDataObjectImpl.java
-│   │           ├── GoogleDataObjectImplException.java
-│   │           ├── IDataObject.java
+│   │           ├── GoogleDataObjectImpl.java                //implementation
+│   │           ├── GoogleDataObjectImplException.java       
+│   │           ├── IDataObject.java                         //interface
 │   │           ├── Main.java
-│   │           ├── NotEmptyObjectException.java
+│   │           ├── NotEmptyObjectException.java        
 │   │           ├── ObjectAlreadyExistsException.java
 │   │           └── ObjectNotFoundException.java
 │   └── resources
@@ -64,7 +64,7 @@ Go to the pom.xml file, then load maven changes to retrieve all the necessary de
     └── java
         └── org
             └── example
-                ├── GoogleDataObjectImplTest.java
+                ├── GoogleDataObjectImplTest.java            //tests
                 └── images
 ```
 
