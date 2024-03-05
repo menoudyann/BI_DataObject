@@ -1,4 +1,4 @@
-package org.example;
+package com.ymd;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import junit.framework.TestCase;
