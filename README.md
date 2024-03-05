@@ -37,21 +37,36 @@ GOOGLE_BUCKET_URI=gs://java.gogle.cld.education/
 
 ## Deployment
 
-### On dev environment
-
-#### Dependencies 
-
-Go the the project root and run the following command to install the dependencies.
+To Install dependencies 
 
 ```
-mvn clean install
+mvn clean install 
 ```
 
-### On prod environment
+To build the development Docker image 
 
-#### Build
 ```
-mvn clean package
+docker build -t "dataobject:dev" --target development .
+```
+
+ To run the Docker container 
+
+```
+docker run --name dataobject-dev -p 8080:8080 dataobject:dev
+```
+
+### Production
+
+To build the production Docker image 
+
+```
+docker build -t "dataobject:prod" --target production .
+```
+
+ To run the Docker container 
+
+```
+docker run --name dataobject-prod -p 8080:8080 dataobject:prod
 ```
 
 ## Directory structure
